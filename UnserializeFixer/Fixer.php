@@ -49,6 +49,7 @@ class Fixer
 	}	
 	
 	public static function handleLastItem($serialized){
+		//https://regex101.com/r/nMA31z
 		preg_match_all('/(['.implode("|",self::$_serialize_type).']):([0-9]{0,})/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
 				
 		if($matches){
@@ -106,7 +107,7 @@ class Fixer
 	
 	public static function handleArrayNotClose($serialized){
 		
-		//any array here ?
+		//https://regex101.com/r/GlJioI
 		preg_match_all('/a:([0-9]{0,}):{/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
 		
 		if($matches){
@@ -114,6 +115,7 @@ class Fixer
 			foreach(array_reverse($matches) as $match){
 				$content = substr($serialized,$match[1][1]+strlen($match[1][0])+2);
 
+				//https://regex101.com/r/6xOzG7
 				preg_match_all('/['.implode("|",self::$_serialize_type).']:/', $content, $matches);
 				
 				var_dump('content',$content);

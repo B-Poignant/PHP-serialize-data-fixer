@@ -2,18 +2,21 @@
 
 namespace UnserializeFixer;
 
-class Fixer
+class Fixer implements iFixer
 {
-	private static $_serialize_type = ['i','b','d','s','a'];
+	private static $_serialize_type = ['i','b','d','s','a','O'];
 	private static $_steps_done=[];
 	
+	public static function writeLog($message, $data,$level='info'){
+		//echo $message;
+		//var_dump($data);
+	}
 	
 	public static function run($serialized){
-		echo '<p>steps_done : '.implode(",", self::$_steps_done).'</p>';
+		self::writeLog('steps_done', self::$_steps_done);
 		$data = @unserialize($serialized);
 
-		
-		var_dump('serialized',$serialized);
+		self::writeLog('serialized', $serialized);
 		if($data===false){
 			
 			if(!in_array('last_item',self::$_steps_done)){
@@ -41,7 +44,7 @@ class Fixer
 				return self::run($serialized);
 			}
 			
-			var_dump($serialized);
+			throw new Exception('Your string still corrupted :`\'(');
 		}
 		
 		
@@ -55,7 +58,7 @@ class Fixer
 		if($matches){
 			$type = end($matches)[1][0];
 			
-			var_dump('type',$type);
+			self::writeLog('type', $type);
 			$serialized = self::handleLastItemByType($matches,$serialized,$type);
 		}
 		
@@ -67,7 +70,7 @@ class Fixer
 				case 's' : 
 					$nb_char_missing = end($matches)[2][0]-(strlen($serialized) - end($matches)[2][1] - strlen(end($matches)[2][0])-2);
 					
-					var_dump('nb_char_missing',$nb_char_missing);
+					self::writeLog('nb_char_missing', $nb_char_missing);
 					if($nb_char_missing>0){
 						$serialized.= str_repeat("X", $nb_char_missing).'"';
 					}
@@ -96,7 +99,7 @@ class Fixer
 	public static function handleBracket($serialized){
 		
 		$missing_bracket = substr_count($serialized, '{')-substr_count($serialized, '}');
-		var_dump('missing_bracket',$missing_bracket);
+		self::writeLog('missing_bracket', $missing_bracket);
 		
 		if($missing_bracket>0){
 			$serialized.= str_repeat("}", $missing_bracket);
@@ -114,14 +117,15 @@ class Fixer
 			
 			foreach(array_reverse($matches) as $match){
 				$content = substr($serialized,$match[1][1]+strlen($match[1][0])+2);
-
+				self::writeLog('content', $content);
+				
 				//https://regex101.com/r/6xOzG7
 				preg_match_all('/['.implode("|",self::$_serialize_type).']:/', $content, $matches);
 				
-				var_dump('content',$content);
+
 				$nb_element_missing = (int) $match[1][0]*2 - count(end($matches));
+				self::writeLog('nb_element_missing', $nb_element_missing);
 				
-				var_dump('nb_element_missing',$nb_element_missing);
 				if($nb_element_missing>0){
 					for($i=0;$i<$nb_element_missing;$i++){
 						$last_char = substr($serialized,-1);
@@ -134,7 +138,6 @@ class Fixer
 					$serialized .=';';
 				}
 			}
-			
 		}
 		
 		return $serialized;

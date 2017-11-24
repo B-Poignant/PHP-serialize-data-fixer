@@ -49,7 +49,9 @@ Give an example
 Explain what these tests test and why
 
 ```
-Give an example
+$test = new \UnserializeFixer\Tester();
+
+var_dump($test->runAll());
 ```
 
 ## Deployment

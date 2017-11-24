@@ -4,7 +4,7 @@ namespace UnserializeFixer;
 
 class Tester
 {
-	private $_test_dir = 'tests';
+	private $_test_dir = 'Tests';
 	private $_possible_tests = [];
 	
 	public function __construct(){

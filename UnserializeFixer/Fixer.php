@@ -8,8 +8,8 @@ class Fixer implements Interfaces\iFixer
 	private static $_steps_done=[];
 	
 	public static function writeLog($message, $data,$level='info'){
-		//echo $message;
-		//var_dump($data);
+		echo $message;
+		var_dump($data);
 	}
 	
 	public static function run($serialized){
@@ -68,7 +68,22 @@ class Fixer implements Interfaces\iFixer
 	public static function handleLastItemByType($matches,$serialized,$type){
 		switch($type){
 				case 's' : 
-					$nb_char_missing = end($matches)[2][0]-(strlen($serialized) - end($matches)[2][1] - strlen(end($matches)[2][0])-2);
+					$match = end($matches);
+					
+					$lenght_element = $match[2][0];;
+					
+					if($lenght_element==''){
+						$lenght_element=1;
+						$serialized.= '1';
+					}
+
+					if(substr($serialized, $match[2][1]+strlen($match[2][0]),1)==''){
+						$serialized.=':';
+					}
+					if(substr($serialized, $match[2][1]+strlen($match[2][0])+1,1)==''){
+						$serialized.='"';
+					}
+					$nb_char_missing= $lenght_element - (strlen($serialized) - ($match[2][1] + strlen($lenght_element) + 2));
 					
 					self::writeLog('nb_char_missing', $nb_char_missing);
 					if($nb_char_missing>0){
@@ -76,7 +91,6 @@ class Fixer implements Interfaces\iFixer
 					}
 					
 					break;
-					
 				case 'i' :
 				case 'b' :
 					if(substr($serialized,-1)==':'){
@@ -111,19 +125,26 @@ class Fixer implements Interfaces\iFixer
 	public static function handleArrayNotClose($serialized){
 		
 		//https://regex101.com/r/GlJioI
-		preg_match_all('/a:([0-9]{0,}):{/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
+		preg_match_all('/a:/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
 		
 		if($matches){
 			
 			foreach(array_reverse($matches) as $match){
-				$content = substr($serialized,$match[1][1]+strlen($match[1][0])+2);
+				$lenght_element =  (int) substr($serialized,$match[0][1]+strlen($match[0][0]),1);
+				if(substr($serialized,$match[0][1]+strlen($match[0][0])+1,1)!==':'){
+					$serialized.=':';
+				}
+				if(substr($serialized,$match[0][1]+strlen($match[0][0])+2,1)!=='{'){
+					$serialized.='{';
+				}
+				
+				$content = substr($serialized,$match[0][1]+2+strlen($lenght_element)+2);
 				self::writeLog('content', $content);
 				
 				//https://regex101.com/r/6xOzG7
 				preg_match_all('/['.implode("|",self::$_serialize_type).']:/', $content, $matches);
-				
 
-				$nb_element_missing = (int) $match[1][0]*2 - count(end($matches));
+				$nb_element_missing = $lenght_element*2 - count(end($matches));
 				self::writeLog('nb_element_missing', $nb_element_missing);
 				
 				if($nb_element_missing>0){

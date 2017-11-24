@@ -7,11 +7,23 @@ class Fixer implements Interfaces\iFixer
 	private static $_serialize_type = ['i','b','d','s','a','O'];
 	private static $_steps_done=[];
 	
+	/**
+	 * writeLog to overwrite see Implements Folder
+	 * @param string $message
+	 * @param type $data
+	 * @param string $level
+	 */
 	public static function writeLog($message, $data,$level='info'){
 		echo $message;
 		var_dump($data);
 	}
 	
+	/**
+	 * Main function
+	 * @param string $serialized
+	 * @return type
+	 * @throws \UnserializeFixer\Exceptions\CorruptedException
+	 */
 	public static function run($serialized){
 		self::writeLog('steps_done', self::$_steps_done);
 		$data = @unserialize($serialized);
@@ -33,7 +45,14 @@ class Fixer implements Interfaces\iFixer
 				$serialized = self::handleArrayNotClose($serialized);
 				
 				return self::run($serialized);
+			}
+			
+			if(!in_array('invalid_length',self::$_steps_done)){
+				self::$_steps_done[] = 'invalid_length';
 				
+				$serialized = self::handleInvalidLength($serialized);
+				
+				return self::run($serialized);
 			}
 			
 			if(!in_array('bracket',self::$_steps_done)){
@@ -51,6 +70,11 @@ class Fixer implements Interfaces\iFixer
 		return $data;
 	}	
 	
+	/**
+	 * Check last item
+	 * @param string $serialized
+	 * @return string
+	 */
 	public static function handleLastItem($serialized){
 		//https://regex101.com/r/nMA31z
 		preg_match_all('/(['.implode("|",self::$_serialize_type).']):([0-9]{0,})/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
@@ -65,6 +89,24 @@ class Fixer implements Interfaces\iFixer
 		return $serialized;
 	}
 	
+	/**
+	 * Check every element length
+	 * @param string $serialized
+	 * @return string
+	 */
+	public static function handleInvalidLength($serialized){
+		echo 'DEBUG BENJAMIN <hr />'.__FILE__.' : '.__LINE__.' : <pre>';var_dump($serialized);exit;
+		return $serialized;
+	}
+	
+	/**
+	 * Called by handleLastItem
+	 * @param array $matches
+	 * @param string $serialized
+	 * @param string $type
+	 * @return string
+	 * @throws UnserializeFixer\Exceptions\InvalidTypeException
+	 */
 	public static function handleLastItemByType($matches,$serialized,$type){
 		switch($type){
 				case 's' : 
@@ -110,6 +152,11 @@ class Fixer implements Interfaces\iFixer
 		return $serialized;
 	}
 	
+	/**
+	 * Check if all bracket are closed
+	 * @param type $serialized
+	 * @return type
+	 */
 	public static function handleBracket($serialized){
 		
 		$missing_bracket = substr_count($serialized, '{')-substr_count($serialized, '}');
@@ -122,6 +169,11 @@ class Fixer implements Interfaces\iFixer
 		return $serialized;
 	}
 	
+	/**
+	 * Check any array
+	 * @param string $serialized
+	 * @return string
+	 */
 	public static function handleArrayNotClose($serialized){
 		
 		//https://regex101.com/r/GlJioI

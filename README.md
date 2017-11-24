@@ -60,4 +60,4 @@ Add additional notes about how to deploy this on a live system
 
 * Hat tip to anyone who's code was used
 * Inspiration
-* etc
+* https://github.com/B-Poignant/PHP-serialize-data-fixer

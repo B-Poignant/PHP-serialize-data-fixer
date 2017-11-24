@@ -1,5 +1,8 @@
 <?php 
 
+require_once('UnserializeFixer/Exceptions/CorruptedException.php');
+require_once('UnserializeFixer/Exceptions/InvalidTypeException.php');
+
 require_once('UnserializeFixer/Interfaces/iFixer.php');
 require_once('UnserializeFixer/Fixer.php');
 require_once('UnserializeFixer/Tester.php');

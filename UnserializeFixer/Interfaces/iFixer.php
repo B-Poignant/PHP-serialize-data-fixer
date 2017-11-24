@@ -1,6 +1,6 @@
 <?php
 
-namespace UnserializeFixer;
+namespace UnserializeFixer\Interfaces;
 
 interface  iFixer 
 {

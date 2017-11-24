@@ -2,7 +2,7 @@
 
 namespace UnserializeFixer;
 
-class Fixer implements iFixer
+class Fixer implements Interfaces\iFixer
 {
 	private static $_serialize_type = ['i','b','d','s','a','O'];
 	private static $_steps_done=[];
@@ -44,7 +44,7 @@ class Fixer implements iFixer
 				return self::run($serialized);
 			}
 			
-			throw new Exception('Your string still corrupted :`\'(');
+			throw new \UnserializeFixer\Exceptions\CorruptedException();
 		}
 		
 		
@@ -90,7 +90,7 @@ class Fixer implements iFixer
 					break;
 				default :
 				
-					throw new Exception($type. ' is not a possible type handleLastItemByType');
+					throw new UnserializeFixer\Exceptions\InvalidTypeException($type);
 		}	
 		
 		return $serialized;

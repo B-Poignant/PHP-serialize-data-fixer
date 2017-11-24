@@ -6,6 +6,8 @@ class Fixer implements Interfaces\iFixer
 {
 	private static $_serialize_type = ['i','b','d','s','a','O'];
 	private static $_steps_done=[];
+	//private static $_resolve_method = 'complete';
+	//private static $_resolve_method = 'remove';
 	
 	/**
 	 * writeLog to overwrite see Implements Folder
@@ -17,7 +19,7 @@ class Fixer implements Interfaces\iFixer
 		//echo $message;
 		//var_dump($data);
 	}
-	
+
 	/**
 	 * Main function
 	 * @param string $serialized
@@ -96,25 +98,46 @@ class Fixer implements Interfaces\iFixer
 	 */
 	public static function handleInvalidLength($serialized){
 		//https://regex101.com/r/nGmMno
-		preg_match_all('/([i|b|d|s]):([0-9]{0,})/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
-		
-		var_dump($serialized);
+		preg_match_all('/([b|s]):([0-9]{0,})/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
 		
 		if($matches){
+			$position_offset = 0;
 			foreach($matches as $match){
 
 				$type = $match[1][0];
 				$lenght = (int)$match[2][0];
-				$position = (int)$match[2][1];
+				$position = (int)$match[2][1]+$position_offset;
 				
 				if($type=='s'){
-					if(substr($serialized, $position+strlen($lenght)+2+$lenght,1)!=='"' || stristr(substr($serialized, $position+strlen($lenght)+2,$lenght),'"')){
-						var_dump($match,substr($serialized, $position+strlen($lenght)+2,$lenght));exit;
+					$content = substr($serialized, $position+strlen($lenght)+2,$lenght);
+					$content_have_doublequote = stristr($content,'"');
+					
+					if(substr($serialized, $position+strlen($lenght)+2+$lenght,1)!=='"' || $content_have_doublequote){
+						//content end earlier
+						if($content_have_doublequote){
+							$double_quote_position = strpos($content, '"');
+							$nb_to_insert = $lenght-$double_quote_position;
+							
+							$serialized = substr_replace($serialized, str_repeat('X', $lenght-$double_quote_position), $position+strlen($lenght)+2+$double_quote_position, 0);
+							
+							$position_offset+=$nb_to_insert;
+						}else{
+							$valid_length = strpos($serialized,'"',$position+3)-$position-3;
+							$serialized = substr_replace($serialized, $valid_length, $position, strlen($lenght));
+							
+							if(strlen($valid_length)!==strlen($lenght)){
+								$position_offset+=strlen($valid_length)-strlen($lenght);
+							}
+						}
+					}
+				}elseif($type=='b'){
+					if(!in_array($lenght,[0,1])){
+						$serialized = substr_replace($serialized, 1, $position,strlen($lenght));
 					}
 				}
 			}
 		}
-		var_dump($serialized);exit;
+
 		return $serialized;
 	}
 	

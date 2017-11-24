@@ -14,8 +14,8 @@ class Fixer implements Interfaces\iFixer
 	 * @param string $level
 	 */
 	public static function writeLog($message, $data,$level='info'){
-		echo $message;
-		var_dump($data);
+		//echo $message;
+		//var_dump($data);
 	}
 	
 	/**
@@ -95,7 +95,26 @@ class Fixer implements Interfaces\iFixer
 	 * @return string
 	 */
 	public static function handleInvalidLength($serialized){
-		echo 'DEBUG BENJAMIN <hr />'.__FILE__.' : '.__LINE__.' : <pre>';var_dump($serialized);exit;
+		//https://regex101.com/r/nGmMno
+		preg_match_all('/([i|b|d|s]):([0-9]{0,})/', $serialized, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
+		
+		var_dump($serialized);
+		
+		if($matches){
+			foreach($matches as $match){
+
+				$type = $match[1][0];
+				$lenght = (int)$match[2][0];
+				$position = (int)$match[2][1];
+				
+				if($type=='s'){
+					if(substr($serialized, $position+strlen($lenght)+2+$lenght,1)!=='"' || stristr(substr($serialized, $position+strlen($lenght)+2,$lenght),'"')){
+						var_dump($match,substr($serialized, $position+strlen($lenght)+2,$lenght));exit;
+					}
+				}
+			}
+		}
+		var_dump($serialized);exit;
 		return $serialized;
 	}
 	
@@ -112,10 +131,10 @@ class Fixer implements Interfaces\iFixer
 				case 's' : 
 					$match = end($matches);
 					
-					$lenght_element = $match[2][0];;
+					$lenght = $match[2][0];;
 					
-					if($lenght_element==''){
-						$lenght_element=1;
+					if($lenght==''){
+						$lenght=1;
 						$serialized.= '1';
 					}
 
@@ -125,7 +144,7 @@ class Fixer implements Interfaces\iFixer
 					if(substr($serialized, $match[2][1]+strlen($match[2][0])+1,1)==''){
 						$serialized.='"';
 					}
-					$nb_char_missing= $lenght_element - (strlen($serialized) - ($match[2][1] + strlen($lenght_element) + 2));
+					$nb_char_missing= $lenght - (strlen($serialized) - ($match[2][1] + strlen($lenght) + 2));
 					
 					self::writeLog('nb_char_missing', $nb_char_missing);
 					if($nb_char_missing>0){
@@ -182,7 +201,7 @@ class Fixer implements Interfaces\iFixer
 		if($matches){
 			
 			foreach(array_reverse($matches) as $match){
-				$lenght_element =  (int) substr($serialized,$match[0][1]+strlen($match[0][0]),1);
+				$lenght =  (int) substr($serialized,$match[0][1]+strlen($match[0][0]),1);
 				if(substr($serialized,$match[0][1]+strlen($match[0][0])+1,1)!==':'){
 					$serialized.=':';
 				}
@@ -190,13 +209,13 @@ class Fixer implements Interfaces\iFixer
 					$serialized.='{';
 				}
 				
-				$content = substr($serialized,$match[0][1]+2+strlen($lenght_element)+2);
+				$content = substr($serialized,$match[0][1]+2+strlen($lenght)+2);
 				self::writeLog('content', $content);
 				
 				//https://regex101.com/r/6xOzG7
 				preg_match_all('/['.implode("|",self::$_serialize_type).']:/', $content, $matches);
 
-				$nb_element_missing = $lenght_element*2 - count(end($matches));
+				$nb_element_missing = $lenght*2 - count(end($matches));
 				self::writeLog('nb_element_missing', $nb_element_missing);
 				
 				if($nb_element_missing>0){

@@ -1,0 +1,11 @@
+{
+    "name": "benjamin/serialize-data-fixer",
+    "description": "Fix corrupted serialized data",
+    "authors": [
+        {
+            "name": "B.Poignant",
+            "email": "benjipoi@hotmail.com"
+        }
+    ],
+    "require": {}
+}

@@ -46,12 +46,10 @@ Give an example
 
 ### And coding style tests
 
-Explain what these tests test and why
+You can run php-unit to run few tests on sample file
 
 ```
-$test = new \UnserializeFixer\Tester();
-
-var_dump($test->runAll());
+phpunit --configuration phpunit.xml --testsuite Sample
 ```
 
 ## Deployment

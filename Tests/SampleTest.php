@@ -40,7 +40,7 @@ class SampleTest extends TestCase {
 
 		return is_object(Fixer::run(file_get_contents('Tests/Samples/object.txt')));
 	}
-	
+
 	public function testPaypalIPN() {
 		$this->assertTrue(true);
 

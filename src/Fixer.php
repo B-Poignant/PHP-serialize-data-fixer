@@ -81,25 +81,27 @@ class Fixer implements Interfaces\iFixer {
 		//still unvalid ?
 		if ($data === false)
 		{
-			$step		 = reset(self::$_steps_left);
-			$next_call	 = 'handle' . $step;
-
-			if (method_exists(__CLASS__, $next_call))
+			if (count(self::$_steps_left) > 0)
 			{
+				$step		 = reset(self::$_steps_left);
+				$next_call	 = 'handle' . $step;
 
-				$serialized = call_user_func_array(array(__CLASS__, $next_call), array($serialized));
-
-				if (($key = array_search($step, self::$_steps_left)) !== false)
+				if (method_exists(__CLASS__, $next_call))
 				{
-					unset(self::$_steps_left[$key]);
+
+					$serialized = call_user_func_array(array(__CLASS__, $next_call), array($serialized));
+
+					if (($key = array_search($step, self::$_steps_left)) !== false)
+					{
+						unset(self::$_steps_left[$key]);
+					}
+
+					return self::treat($serialized);
+				} else
+				{
+					throw new Exceptions\HandleMethodDontExistException($next_call);
 				}
-
-				return self::treat($serialized);
-			} else
-			{
-				throw new Exceptions\HandleMethodDontExistException($next_call);
 			}
-
 			throw new Exceptions\CorruptedException();
 		}
 

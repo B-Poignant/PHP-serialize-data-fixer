@@ -22,7 +22,7 @@ class ExceptionTest extends TestCase {
 
 		Fixer::setStepsLeft(['php-unitTest']);
 
-		Fixer::run('XXXX');
+		Fixer::treat('XXXX');
 	}
 
 }

@@ -18,8 +18,8 @@ class Fixer implements Interfaces\iFixer
 	 * @param string $level
 	 */
 	public static function writeLog($message, $data=null,$level='info'){
-		//echo $message;
-		//var_dump($data);
+		echo $message;
+		var_dump($data);
 	}
 
 	public static function run($serialized){
@@ -202,7 +202,7 @@ class Fixer implements Interfaces\iFixer
 					if($nb_char_missing>0){
 						$serialized.= str_repeat("X", $nb_char_missing).'"';
 					}elseif($nb_char_missing<0){
-						$serialized = substr_replace($serialized, abs($nb_char_missing)+2, $position, strlen($lenght)).'";';
+						$serialized = substr_replace($serialized, abs($nb_char_missing)+2+$lenght, $position, strlen($lenght)).'";';
 					}
 					
 					break;
@@ -268,22 +268,19 @@ class Fixer implements Interfaces\iFixer
 				}
 				
 				$content = substr($serialized,$match[0][1]+2+strlen($lenght)+2);
-				echo '---------------------------'.$content.'----------------------------------------';
-		
 				self::writeLog('content', $content);
 				
 				//https://regex101.com/r/6xOzG7
 				preg_match_all('/['.implode("|",self::$_serialize_type).']:/', $content, $matches);
 
 				$nb_element_missing = $lenght*2 - count(end($matches))+$previous_imbricated_array_lenght;
-				var_dump($nb_element_missing,$previous_imbricated_array_lenght);
 				
 				self::writeLog('nb_element_missing', $nb_element_missing);
 				
 				if($nb_element_missing>0){
 					for($i=0;$i<$nb_element_missing;$i++){
 						$last_char = substr($serialized,-1);
-						if($last_char!==';' && $last_char!=='{'){
+						if($last_char!==';' && $last_char!=='{' && $last_char!=='}'){
 							$serialized.=';';
 						}
 						$serialized.='s:'.strlen('X_'.$i).':"X_'.$i.'"';
@@ -292,7 +289,7 @@ class Fixer implements Interfaces\iFixer
 					$serialized .=';}';
 				}
 				
-				$previous_imbricated_array_lenght+=$lenght*2-1;
+				$previous_imbricated_array_lenght+=$lenght*2;
 			}
 		}
 		

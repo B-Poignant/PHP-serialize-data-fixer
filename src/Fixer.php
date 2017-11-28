@@ -7,12 +7,7 @@ namespace UnserializeFixer;
 class Fixer implements Interfaces\iFixer
 {
 	private static $_serialize_type = ['i','b','d','s','a','O'];
-	private static $_steps_left=[
-		'last_item',
-		'array_not_close',
-		'invalid_length',
-		'bracket',
-	];
+	private static $_steps_left=null;
 	//private static $_resolve_method = 'complete';
 	//private static $_resolve_method = 'remove';
 	
@@ -22,20 +17,33 @@ class Fixer implements Interfaces\iFixer
 	 * @param type $data
 	 * @param string $level
 	 */
-	public static function writeLog($message, $data,$level='info'){
+	public static function writeLog($message, $data=null,$level='info'){
 		//echo $message;
 		//var_dump($data);
 	}
 
+	public static function run($serialized){
+		self::writeLog('run');
+		
+		self::$_steps_left=[
+			'last_item',
+			'array_not_close',
+			'invalid_length',
+			'bracket',
+		];
+		
+		return self::treat($serialized);
+	}
+	
 	/**
 	 * Main function
 	 * @param string $serialized
 	 * @return type
 	 * @throws \UnserializeFixer\Exceptions\CorruptedException
 	 */
-	public static function run($serialized){
-		
-		self::writeLog('steps_left', self::$_steps_left);
+	public static function treat($serialized){
+		self::writeLog('treat');
+
 		$data = @unserialize($serialized);
 
 		self::writeLog('serialized', $serialized);
@@ -48,7 +56,7 @@ class Fixer implements Interfaces\iFixer
 					unset(self::$_steps_left[$key]);
 				}
 
-				return self::run($serialized);
+				return self::treat($serialized);
 			}
 			
 			if(reset(self::$_steps_left)=='array_not_close'){
@@ -59,7 +67,7 @@ class Fixer implements Interfaces\iFixer
 					unset(self::$_steps_left[$key]);
 				}
 				
-				return self::run($serialized);
+				return self::treat($serialized);
 			}
 			
 			if(reset(self::$_steps_left)=='invalid_length'){
@@ -69,7 +77,7 @@ class Fixer implements Interfaces\iFixer
 					unset(self::$_steps_left[$key]);
 				}
 				
-				return self::run($serialized);
+				return self::treat($serialized);
 			}
 			
 			if(reset(self::$_steps_left)=='bracket'){
@@ -79,7 +87,7 @@ class Fixer implements Interfaces\iFixer
 					unset(self::$_steps_left[$key]);
 				}
 				
-				return self::run($serialized);
+				return self::treat($serialized);
 			}
 			
 			throw new Exceptions\CorruptedException();

@@ -43,7 +43,7 @@ class SampleTest extends TestCase {
 	
 	public function testPaypalIPN() {
 		$this->assertTrue(true);
-echo 'DEBUG BENJAMIN <hr />'.__FILE__.' : '.__LINE__.' : <pre>';var_dump(Fixer::run(file_get_contents('Tests/Samples/paypal_IPN_truncated.txt')));exit;
+
 		return is_array(Fixer::run(file_get_contents('Tests/Samples/paypal_IPN_truncated.txt')));
 	}
 

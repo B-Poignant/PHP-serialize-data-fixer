@@ -1,7 +1,5 @@
 <?php
 
-namespace UnserializeFixer;
-
 class Tester
 {
 	private $_test_dir = 'Tests';
@@ -16,7 +14,7 @@ class Tester
 	public function run(array $tests=[]){
 		$results = [];
 		foreach($tests as $test){
-			$results[$test] = \UnserializeFixer\Fixer::run(file_get_contents($this->get_test_dir().'/'.$test.'.txt')); 
+			$results[$test] = Fixer::run(file_get_contents($this->get_test_dir().'/'.$test.'.txt')); 
 		}
 		
 		return $results;

@@ -1,5 +1,7 @@
 <?php
-
+use UnserializeFixer\Interfaces;
+use UnserializeFixer\Exceptions;
+ 
 namespace UnserializeFixer;
 
 class Fixer implements Interfaces\iFixer
@@ -21,8 +23,8 @@ class Fixer implements Interfaces\iFixer
 	 * @param string $level
 	 */
 	public static function writeLog($message, $data,$level='info'){
-		echo $message;
-		var_dump($data);
+		//echo $message;
+		//var_dump($data);
 	}
 
 	/**
@@ -32,6 +34,7 @@ class Fixer implements Interfaces\iFixer
 	 * @throws \UnserializeFixer\Exceptions\CorruptedException
 	 */
 	public static function run($serialized){
+		
 		self::writeLog('steps_left', self::$_steps_left);
 		$data = @unserialize($serialized);
 
@@ -79,7 +82,7 @@ class Fixer implements Interfaces\iFixer
 				return self::run($serialized);
 			}
 			
-			throw new \UnserializeFixer\Exceptions\CorruptedException();
+			throw new Exceptions\CorruptedException();
 		}
 		
 		
@@ -210,7 +213,7 @@ class Fixer implements Interfaces\iFixer
 				
 				default :
 				
-					throw new UnserializeFixer\Exceptions\InvalidTypeException($type);
+					throw new Exceptions\InvalidTypeException($type);
 		}	
 		
 		return $serialized;

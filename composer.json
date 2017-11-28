@@ -1,11 +1,27 @@
 {
     "name": "b-poignant/serialize-data-fixer",
     "description": "Fix corrupted serialized data",
+	 "type": "library",
     "authors": [
         {
             "name": "B.Poignant",
             "email": "benjipoi@hotmail.com"
         }
     ],
-    "require": {}
+	  "keywords": [
+		"php",
+		"serialize",
+		"unserialize",
+		"corrupted-data"
+	  ],
+	  "license": "LGPL",
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "5.7"
+    },
+	"autoload": {
+    "psr-4": {
+		"UnserializeFixer\\": "src/"
+    }
+  }
 }

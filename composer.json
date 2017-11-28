@@ -15,7 +15,7 @@
 		"unserialize",
 		"corrupted-data"
 	  ],
-	  "license": "LGPL",
+	  "license": "MIT",
     "require": {},
     "require-dev": {
         "phpunit/phpunit": "5.7"

@@ -8,6 +8,7 @@ class Fixer implements Interfaces\iFixer
 {
 	private static $_serialize_type = ['i','b','d','s','a','O'];
 	private static $_steps_left=null;
+	private static $_enable_log=false;
 	//private static $_resolve_method = 'complete';
 	//private static $_resolve_method = 'remove';
 	
@@ -17,11 +18,37 @@ class Fixer implements Interfaces\iFixer
 	 * @param type $data
 	 * @param string $level
 	 */
-	public static function writeLog($message, $data=null,$level='info'){
-		echo $message;
-		var_dump($data);
+	public static function writeLog($message, $data=null,$level='debug'){
+		if(self::$_enable_log){
+			switch($level){
+				default: 
+				case 'debug' :
+					$color="C7FAFF";
+					break;
+				case 'info' :
+					$color="1A30F5";
+					break;
+				case 'warning' :
+					$color="FFFF80";
+					break;
+				case 'error' :
+					$color="FD1111";
+					break;
+			}
+			echo '<p style="background-color:'.$color.';">'.$message.'</p>';
+			if($data){
+				echo '<pre>';
+				var_dump($data);
+				echo '</pre>';
+			}
+		}
 	}
 
+	/**
+	 * Main function
+	 * @param type $serialized
+	 * @return type
+	 */
 	public static function run($serialized){
 		self::writeLog('run');
 		

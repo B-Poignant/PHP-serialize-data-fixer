@@ -1,4 +1,5 @@
 {
+	"version": "1.0.0",
     "name": "b-poignant/serialize-data-fixer",
     "description": "Fix corrupted serialized data",
 	 "type": "library",

@@ -9,6 +9,11 @@
             "email": "benjipoi@hotmail.com"
         }
     ],
+	"config": {
+        "platform": {
+            "php": "7.1"
+        }
+		},
 	  "keywords": [
 		"php",
 		"serialize",

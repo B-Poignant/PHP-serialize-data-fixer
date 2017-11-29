@@ -40,11 +40,7 @@ class Config implements Interfaces\iConfig {
 		return self::$_resolve_method;
 	}
 
-	public static function setLogEnabled($log_enabled) {
-		if (!is_bool($log_enabled))
-		{
-			//TODO execption
-		}
+	public static function setLogEnabled(bool $log_enabled) {
 
 		self::$_log_enabled = $log_enabled;
 	}

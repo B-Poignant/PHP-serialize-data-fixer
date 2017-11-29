@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use UnserializeFixer\Fixer;
+use UnserializeFixer\Config;
 
 class ExceptionTest extends TestCase {
 
@@ -25,4 +26,9 @@ class ExceptionTest extends TestCase {
 		Fixer::treat('XXXX');
 	}
 
+	public function testInvalidResolveMethodException() {
+		$this->expectException('\UnserializeFixer\Exceptions\InvalidResolveMethodException');
+
+		Config::setResolveMethod('php-unitTest');
+	}
 }

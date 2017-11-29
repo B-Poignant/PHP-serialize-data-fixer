@@ -1,0 +1,2 @@
+- log_enabled: 0
+- resolve_method: 'complete'

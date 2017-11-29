@@ -9,11 +9,8 @@ class Fixer implements Interfaces\iFixer {
 
 	private static $_serialize_type	 = ['i', 'b', 'd', 's', 'a', 'O'];
 	private static $_steps_left		 = null;
-	private static $_enable_log		 = false;
-
-	//private static $_resolve_method = 'complete';
-	//private static $_resolve_method = 'remove';
-
+	private static $_config		 = null;
+	
 	/**
 	 * writeLog to overwrite see Implements Folder
 	 * @param string $message
@@ -21,7 +18,7 @@ class Fixer implements Interfaces\iFixer {
 	 * @param string $level
 	 */
 	public static function writeLog($message, $data = null, $level = 'debug') {
-		if (self::$_enable_log)
+		if (self::getConfig()->getLogEnabled())
 		{
 			switch ($level) {
 				default:
@@ -42,12 +39,26 @@ class Fixer implements Interfaces\iFixer {
 			if ($data)
 			{
 				echo '<pre>';
-				var_dump($data);
+				print_r($data);
 				echo '</pre>';
 			}
 		}
 	}
 
+	public static function getConfig() {
+		if(self::$_config===null){
+			$confg = new Config();
+			$confg->init();
+			self::setConfig($confg);
+		}
+		
+		return self::$_config;
+	}
+	
+	public static function setConfig(Config $config) {
+		self::$_config = $config;
+	}
+	
 	/**
 	 * Main function
 	 * @param type $serialized
@@ -61,6 +72,7 @@ class Fixer implements Interfaces\iFixer {
 			'ArrayNotClose',
 			'InvalidLength',
 			'Bracket',
+			//'Invalid',
 		];
 
 		return self::treat($serialized);
@@ -88,7 +100,7 @@ class Fixer implements Interfaces\iFixer {
 
 				if (method_exists(__CLASS__, $next_call))
 				{
-
+					self::writeLog('next_call', $next_call);
 					$serialized = call_user_func_array(array(__CLASS__, $next_call), array($serialized));
 
 					if (($key = array_search($step, self::$_steps_left)) !== false)
@@ -121,8 +133,6 @@ class Fixer implements Interfaces\iFixer {
 		if ($matches)
 		{
 			$type = end($matches)[1][0];
-
-			self::writeLog('type', $type);
 			$serialized = self::handleLastItemByType($matches, $serialized, $type);
 		}
 
@@ -144,9 +154,10 @@ class Fixer implements Interfaces\iFixer {
 			foreach ($matches as $match)
 			{
 				$type		 = $match[1][0];
+				
+				//todo refactor
 				$lenght		 = (int) $match[2][0];
 				$position	 = (int) $match[2][1] + $position_offset;
-				self::writeLog('type', $type);
 
 				if ($type == 's')
 				{
@@ -159,7 +170,6 @@ class Fixer implements Interfaces\iFixer {
 						//content end earlier
 						if ($content_have_doublequote)
 						{
-							self::writeLog('content_have_doublequote', $content_have_doublequote);
 							$double_quote_position	 = strpos($content, '"');
 							$nb_to_insert			 = $lenght - $double_quote_position;
 
@@ -204,33 +214,30 @@ class Fixer implements Interfaces\iFixer {
 			case 's' :
 
 				$match = end($matches);
+				
+				//todo refactor
+				$lenght		 = (int) $match[2][0];
+				$position	 = (int) $match[2][1];
+				
+				$content					 = substr($serialized, $position + strlen($lenght) + 2, $lenght);
+				$content_have_doublequote	 = stristr($content, '"');
 
-				$lenght		 = $match[2][0];
-				;
-				$position	 = $match[2][1];
-				if ($lenght == '')
+				if (substr($serialized, $position + strlen($lenght) + 2 + $lenght, 1) !== '"' || $content_have_doublequote)
 				{
-					$lenght = 1;
-					$serialized.= '1';
-				}
 
-				if (substr($serialized, $match[2][1] + strlen($match[2][0]), 1) == '')
-				{
-					$serialized.=':';
-				}
-				if (substr($serialized, $match[2][1] + strlen($match[2][0]) + 1, 1) == '')
-				{
-					$serialized.='"';
-				}
-				$nb_char_missing = $lenght - (strlen($serialized) - ($match[2][1] + strlen($lenght) + 4));
+					//content end earlier
+					if ($content_have_doublequote)
+					{
+						$double_quote_position	 = strpos($content, '"');
+						$nb_to_insert			 = $lenght - $double_quote_position;
 
-				self::writeLog('nb_char_missing', $nb_char_missing);
-				if ($nb_char_missing > 0)
-				{
-					$serialized.= str_repeat("X", $nb_char_missing) . '"';
-				} elseif ($nb_char_missing < 0)
-				{
-					$serialized = substr_replace($serialized, abs($nb_char_missing) + 2 + $lenght, $position, strlen($lenght)) . '";';
+						$serialized = substr_replace($serialized, str_repeat('X', $lenght - $double_quote_position), $position + strlen($lenght) + 2 + $double_quote_position, 0);
+					} else
+					{
+						$valid_length = strpos($serialized, '"', $position + 3) - $position - 3;
+
+						$serialized = substr_replace($serialized, $valid_length, $position, strlen($lenght));
+					}
 				}
 
 				break;
@@ -264,7 +271,6 @@ class Fixer implements Interfaces\iFixer {
 	public static function handleBracket($serialized) {
 
 		$missing_bracket = substr_count($serialized, '{') - substr_count($serialized, '}');
-		self::writeLog('missing_bracket', $missing_bracket);
 
 		if ($missing_bracket > 0)
 		{
@@ -302,14 +308,11 @@ class Fixer implements Interfaces\iFixer {
 				}
 
 				$content = substr($serialized, $match[0][1] + 2 + strlen($lenght) + 2);
-				self::writeLog('content', $content);
 
 				//https://regex101.com/r/6xOzG7
 				preg_match_all('/[' . implode("|", self::$_serialize_type) . ']:/', $content, $matches);
 
 				$nb_element_missing = $lenght * 2 - count(end($matches)) + $previous_imbricated_array_lenght;
-
-				self::writeLog('nb_element_missing', $nb_element_missing);
 
 				if ($nb_element_missing > 0)
 				{
@@ -333,8 +336,9 @@ class Fixer implements Interfaces\iFixer {
 		return $serialized;
 	}
 
-	static function setStepsLeft(array $_steps_left) {
-		self::$_steps_left = $_steps_left;
+	static function setStepsLeft(array $steps_left) {
+		self::$_steps_left = $steps_left;
 	}
-
+	
+	
 }

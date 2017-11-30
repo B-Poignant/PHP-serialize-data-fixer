@@ -6,28 +6,40 @@ Fix corrupted serialized data
 
 First repo.
 
-### Prerequisites
-
-What things you need to install the software and how to install them
+### Installing
 
 ```
 composer require b-poignant/serialize-data-fixer
 ```
 
-### Installing
+### Using
 
 A step by step series of examples that tell you have to get a development env running
 
 Say what the step will be
 
 ```
-Give the example
+use UnserializeFixer\Fixer;
+require_once('vendor/autoload.php');
+
+var_dump(Fixer::run('a:3:{s:3:"foo";s:3:"bar";s:3:"int";i:8;i:9;s:4:"test";}'));
 ```
 
-And repeat
+You can set config like this : 
 
 ```
-until finished
+use UnserializeFixer\Fixer;
+use UnserializeFixer\Config;
+
+require_once('vendor/autoload.php');
+
+$config = new Config();
+$config->setlogEnabled(false);
+$config->setResolveMethod('complete');
+
+Fixer::setConfig($config);
+
+var_dump(Fixer::run('a:3:{s:3:"foo";s:3:"bar";s:3:"int";i:8;i:9;s:4:"test";}'));
 ```
 
 End with an example of getting some data out of the system or using it for a little demo

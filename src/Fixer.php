@@ -71,8 +71,8 @@ class Fixer implements Interfaces\iFixer {
 			'LastItem',
 			'ArrayNotClose',
 			'InvalidLength',
+			'InvalidSubsequence',
 			'Bracket',
-			//'Invalid',
 		];
 
 		return self::treat($serialized);
@@ -224,7 +224,6 @@ class Fixer implements Interfaces\iFixer {
 
 				if (substr($serialized, $position + strlen($lenght) + 2 + $lenght, 1) !== '"' || $content_have_doublequote)
 				{
-
 					//content end earlier
 					if ($content_have_doublequote)
 					{
@@ -234,9 +233,7 @@ class Fixer implements Interfaces\iFixer {
 						$serialized = substr_replace($serialized, str_repeat('X', $lenght - $double_quote_position), $position + strlen($lenght) + 2 + $double_quote_position, 0);
 					} else
 					{
-						$valid_length = strpos($serialized, '"', $position + 3) - $position - 3;
-
-						$serialized = substr_replace($serialized, $valid_length, $position, strlen($lenght));
+						$serialized.= str_repeat("X", strlen($serialized)-$position-2).'";';
 					}
 				}
 
@@ -334,6 +331,10 @@ class Fixer implements Interfaces\iFixer {
 		}
 
 		return $serialized;
+	}
+	
+	public static function handleInvalidSubsequence($serialized) {
+		return preg_replace('~{{2,}~','{', $serialized);
 	}
 
 	static function setStepsLeft(array $steps_left) {

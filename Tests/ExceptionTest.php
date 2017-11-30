@@ -31,4 +31,10 @@ class ExceptionTest extends TestCase {
 
 		Config::setResolveMethod('php-unitTest');
 	}
+	
+	public function testNotImplementedWetException() {
+		$this->expectException('\UnserializeFixer\Exceptions\NotImplementedWetException');
+
+		Config::setResolveMethod('remove');
+	}
 }

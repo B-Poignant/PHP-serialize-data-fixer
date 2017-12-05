@@ -33,10 +33,10 @@ class Config implements Interfaces\iConfig {
 			throw new Exceptions\InvalidResolveMethodException($resolve_method);
 		}
 
-		if($resolve_method=='remove'){
-			throw new Exceptions\NotImplementedWetException();
-		}
-		
+		/* if($resolve_method=='remove'){
+		  throw new Exceptions\NotImplementedWetException();
+		  } */
+
 		self::$_resolve_method = $resolve_method;
 	}
 

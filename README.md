@@ -68,8 +68,11 @@ phpunit --configuration phpunit.xml --testsuite Sample
 
 Add additional notes about how to deploy this on a live system
 
-## Acknowledgments
+## Github
 
-* Hat tip to anyone who's code was used
-* Inspiration
 * https://github.com/B-Poignant/PHP-serialize-data-fixer
+
+## Me
+
+* https://www.linkedin.com/in/benjaminpoignant/
+* https://stackoverflow.com/users/3224358/benjamin-poignant

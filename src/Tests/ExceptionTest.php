@@ -12,29 +12,21 @@ class ExceptionTest extends TestCase {
 		Fixer::run('XXXX');
 	}
 
-	public function testInvalidTypeException() {
+/*	public function testInvalidTypeException() {
 		$this->expectException('\UnserializeFixer\Exceptions\InvalidTypeException');
 
 		Fixer::handleLastItemByType([], '', 'Z');
 	}
-
-	public function testHandleMethodDontExistException() {
-		$this->expectException('\UnserializeFixer\Exceptions\HandleMethodDontExistException');
-
-		Fixer::setStepsLeft(['php-unitTest']);
-
-		Fixer::treat('XXXX');
-	}
-
+*/
 	public function testInvalidResolveMethodException() {
 		$this->expectException('\UnserializeFixer\Exceptions\InvalidResolveMethodException');
 
 		Config::setResolveMethod('php-unitTest');
 	}
 	
-	public function testNotImplementedWetException() {
+	/*public function testNotImplementedWetException() {
 		$this->expectException('\UnserializeFixer\Exceptions\NotImplementedWetException');
 
 		Config::setResolveMethod('remove');
-	}
+	}*/
 }

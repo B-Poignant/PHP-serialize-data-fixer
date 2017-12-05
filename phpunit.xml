@@ -1,10 +1,10 @@
 <phpunit bootstrap="vendor/autoload.php">
   <testsuites>
     <testsuite name="Core">
-      <file>Tests/ExceptionTest.php</file>
+      <file>src/Tests/ExceptionTest.php</file>
     </testsuite>
 <testsuite name="Sample">
-	  <file>Tests/SampleTest.php</file>
+	  <file>src/Tests/SampleTest.php</file>
     </testsuite>
   </testsuites>
 </phpunit>

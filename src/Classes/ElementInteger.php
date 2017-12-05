@@ -13,5 +13,8 @@ class ElementInteger extends BaseElement {
 		$this->value = $value;
 	}
 
+	public function getSerializeElement(){
+		return 'i:'.$this->getValue().';';
+	}
 
 }

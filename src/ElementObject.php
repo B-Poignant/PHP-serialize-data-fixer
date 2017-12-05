@@ -13,7 +13,9 @@ class ElementObject  extends CanHoldElement {
 		$this->name = $name;
 	}
 	
-	public function getSerialize(){
+	public function getSerializeElement(){
+		$this->elementsCheck();
+		
 		$part = 'O:'.strlen($this->getName()).':"'.$this->getName().'":'.$this->getlength().':{';
 		foreach($this->getElements() as $element){
 			$part .= $element->getSerialize();

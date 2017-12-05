@@ -81,7 +81,7 @@ class Fixer implements Interfaces\iFixer {
 		foreach($parts as $part){
 			$explode_part = array_merge($explode_part, explode('{',$part));
 		}
-		
+
 		foreach($explode_part as $part){
 			$element = ElementFactory::makeElement($part);
 			if($element !==null){

@@ -18,8 +18,8 @@ class ElementString  extends lengthElement {
 	}
 	
 	public function repairElement(){
-		preg_match('/s:([0-9]):"(.{1,})"|s:([0-9]):"(.{1,})|s:([0-9])/', $this->getPart(), $matches);
-		
+		preg_match('/s:([0-9]{1,}):"(.{1,})"|s:([0-9]{1,}):"(.{1,})|s:([0-9]{1,})/', $this->getPart(), $matches);
+
 		if(isset($matches[5])){
 			$length = $matches[5];
 		}elseif(isset($matches[3],$matches[4])){

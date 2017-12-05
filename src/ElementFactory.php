@@ -78,6 +78,7 @@ class ElementFactory  {
 				$element =  new ElementNull();
 			}else{
 				$element =  new CorruptedElement();
+				$element->setCorrupted(true);
 			}
 		}
 		

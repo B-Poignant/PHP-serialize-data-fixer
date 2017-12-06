@@ -90,9 +90,7 @@ class Fixer implements Interfaces\iFixer {
 					$current_element = self::$_element;
 				}else{
 					if($current_element instanceof CanHoldElement){
-						if(count($current_element->elements)<=$current_element->length*2){
-							$current_element->addElement($element);
-						}
+						$current_element->addElement($element);
 						
 						if($element instanceof CanHoldElement){
 							$current_element = $element;
@@ -115,11 +113,12 @@ class Fixer implements Interfaces\iFixer {
 		$data = @unserialize(self::$_serialized);
 		self::writeLog('serialized', self::$_serialized);
 		
+		echo  self::$_serialized.'<br />';
 		//still unvalid ?
 		if ($data === false)
 		{
 			if(self::$_element instanceof CanHoldElement){
-				$corruptedElements = self::$_element->getCorruptedElements(true);
+				$corruptedElements = array_reverse(self::$_element->getCorruptedElements(true));
 				foreach($corruptedElements as $corruptedElement){
 					$corruptedElement->repair();
 					if($corruptedElement->getFixTry()==3){

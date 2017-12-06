@@ -1,8 +1,8 @@
 <?php
 
-namespace UnserializeFixer;
+namespace UnserializeFixer\Elements;
 
-class ElementString  extends lengthElement {
+class ElementString  extends \UnserializeFixer\LengthElement {
 	public $value	 = null;
 	
 	public function getValue() {

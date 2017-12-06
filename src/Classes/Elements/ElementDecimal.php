@@ -1,8 +1,8 @@
 <?php
 
-namespace UnserializeFixer;
+namespace UnserializeFixer\Elements;
 
-class ElementBoolean extends BaseElement  {
+class ElementDecimal extends \UnserializeFixer\BaseElement  {
 	public $value	 = null;
 	
 	function getValue() {
@@ -12,8 +12,9 @@ class ElementBoolean extends BaseElement  {
 	function setValue($value) {
 		$this->value = $value;
 	}
-
+	
 	public function getSerializeElement(){
-		return 'b:'.$this->getValue().';';
+		return 'd:'.$this->getValue().';';
 	}
+	
 }

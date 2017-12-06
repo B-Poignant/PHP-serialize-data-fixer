@@ -1,4 +1,5 @@
 <?php
+use UnserializeFixer\Elements;
 
 namespace UnserializeFixer;
 
@@ -11,7 +12,7 @@ class ElementFactory  {
 			$type = $matches[1];
 			switch($type){
 				case 'a' :
-					$element =  new ElementArray();
+					$element =  new Elements\ElementArray();
 					$element->setLength($matches[2]);
 
 					break;
@@ -20,17 +21,11 @@ class ElementFactory  {
 					
 					preg_match('/O:[0-9.]{0,}:"(.{'.$length_name.','.$length_name.'})":([0-9]{0,}):/', $part, $matches_object);
 					
-					$element =  new ElementObject();
-					
+					$element =  new Elements\ElementObject();
 					if(count($matches_object)==0){
-						$element->setCause('no_length');
-						$element->setCorrupted(true);
-						
-						break;
-					}elseif(count($matches_object)==1){
 						$element->setCause('invalid_length');
 						$element->setCorrupted(true);
-						
+
 						break;
 					}else{
 						
@@ -39,13 +34,12 @@ class ElementFactory  {
 
 						break;
 					}
-					
 				case 's' :
 					$length = $matches[2];
 					
 					preg_match('/s:[0-9]{0,}:"(.{'.$length.','.$length.'})"/', $part, $matches_string);
 					
-					$element =  new ElementString();
+					$element =  new Elements\ElementString();
 					if(count($matches_string)==0){
 						$element->setCorrupted(true);
 						
@@ -58,27 +52,27 @@ class ElementFactory  {
 						break;
 					}
 				case 'b' :
-					$element =  new ElementBoolean();
+					$element =  new Elements\ElementBoolean();
 					$element->setValue($matches[2]);
 
 					break;
 				case 'i' :
-					$element =  new ElementInteger();
+					$element =  new Elements\ElementInteger();
 					$element->setValue($matches[2]);
 
 					break;
 				case 'd' :
-					$element =  new ElementDecimal();
+					$element =  new Elements\ElementDecimal();
 					$element->setValue($matches[2]);
 
 					break;
 			}
 		}else{
 			if($part=='N'){
-				$element =  new ElementNull();
+				$element =  new Elements\ElementNull();
 			}else{
-				$element =  new CorruptedElement();
-				$element->setCorrupted(true);
+				return null;
+				//$element =  new CorruptedElement();
 			}
 		}
 		

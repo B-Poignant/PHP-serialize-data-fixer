@@ -1,8 +1,8 @@
 <?php
 
-namespace UnserializeFixer;
+namespace UnserializeFixer\Elements;
 
-class ElementInteger extends BaseElement {
+class ElementInteger extends \UnserializeFixer\BaseElement {
 	public $value	 = null;
 	
 	function getValue() {

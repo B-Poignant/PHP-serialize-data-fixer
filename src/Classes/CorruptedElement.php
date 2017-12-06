@@ -4,6 +4,10 @@ namespace UnserializeFixer;
 
 class CorruptedElement  extends BaseElement{
 	
+	public function __construct(){
+		$this->setCorrupted(true);
+	}
+	
 	//todo corrupted clean
 	public function repairElement() {
 		

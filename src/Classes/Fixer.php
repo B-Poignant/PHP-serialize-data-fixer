@@ -113,7 +113,6 @@ class Fixer implements Interfaces\iFixer {
 		$data = @unserialize(self::$_serialized);
 		self::writeLog('serialized', self::$_serialized);
 		
-		echo  self::$_serialized.'<br />';
 		//still unvalid ?
 		if ($data === false)
 		{

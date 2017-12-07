@@ -2,9 +2,13 @@
 
 namespace UnserializeFixer\Elements;
 
-class ElementNull extends \UnserializeFixer\BaseElement  {
+use UnserializeFixer\BaseElement;
 
-	public function getSerializeElement(){
+class ElementNull extends BaseElement
+{
+	
+	public function getSerializeElement(): string
+	{
 		return 'N;';
 	}
 }

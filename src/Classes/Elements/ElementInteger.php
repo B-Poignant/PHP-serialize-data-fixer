@@ -2,19 +2,26 @@
 
 namespace UnserializeFixer\Elements;
 
-class ElementInteger extends \UnserializeFixer\BaseElement {
-	public $value	 = null;
+use UnserializeFixer\BaseElement;
+
+class ElementInteger extends BaseElement
+{
+	public $value = null;
 	
-	function getValue() {
+	public function getSerializeElement(): string
+	{
+		return 'i:' . $this->getValue() . ';';
+	}
+	
+	function getValue(): string
+	{
 		return $this->value;
 	}
-
-	function setValue($value) {
+	
+	function setValue(string $value): void
+	{
+		
 		$this->value = $value;
 	}
-
-	public function getSerializeElement(){
-		return 'i:'.$this->getValue().';';
-	}
-
+	
 }

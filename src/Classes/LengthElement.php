@@ -2,14 +2,18 @@
 
 namespace UnserializeFixer;
 
-abstract class LengthElement extends baseElement {
-	public $length	 = null;
+abstract class LengthElement extends baseElement
+{
+	public $length = null;
 	
-	public function getLength() {
+	public function getLength(): ?int
+	{
 		return $this->length;
 	}
-
-	public function setLength($length) {
+	
+	public function setLength($length): void
+	{
 		$this->length = $length;
 	}
 }
+

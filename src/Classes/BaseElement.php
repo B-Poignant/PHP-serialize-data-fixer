@@ -2,65 +2,80 @@
 
 namespace UnserializeFixer;
 
-abstract class BaseElement {
-	public $part	 = null;
-	public $corrupted	 = false;
-	public $ignore =null;
-	public $cause =null;
-	public $fix_try =0;
-
-	public function getCause() {
+abstract class BaseElement
+{
+	public $part = null;
+	public $corrupted = false;
+	public $ignore = false;
+	public $cause = null;
+	public $fix_try = 0;
+	
+	public function getCause(): ?string
+	{
 		return $this->cause;
 	}
-
-	public function setCause($cause) {
+	
+	public function setCause($cause): void
+	{
 		$this->cause = $cause;
 	}
-
-	public function getSerialize(){
-		if($this->getIgnore()===null){
+	
+	public function getSerialize(): ?string
+	{
+		if ($this->getIgnore() === false) {
+			
 			return $this->getSerializeElement();
-		}else{
+		} else {
 			return null;
 		}
 	}
-	public function getFixTry() {
-		return $this->fix_try;
-	}
-
-	public function incrementFixTry($increment) {
-		$this->fix_try +=$increment;
+	
+	public function getIgnore(): bool
+	{
+		return $this->ignore;
 	}
 	
-	function getPart() {
+	public function setIgnore(bool $ignore): void
+	{
+		$this->ignore = $ignore;
+	}
+	
+	public function getFixTry(): int
+	{
+		return $this->fix_try;
+	}
+	
+	function getPart(): string
+	{
 		return $this->part;
 	}
-
-	function setPart($part) {
+	
+	function setPart($part): void
+	{
 		$this->part = $part;
 	}
-
-	public function getCorrupted() {
+	
+	public function getCorrupted(): bool
+	{
 		return $this->corrupted;
 	}
-
-	public function setCorrupted(bool $corrupted) {
+	
+	public function setCorrupted(bool $corrupted): void
+	{
 		$this->corrupted = $corrupted;
 	}
 	
-	public function getIgnore() {
-		return $this->ignore;
-	}
-
-	public function setIgnore($ignore) {
-		$this->ignore = $ignore;
-	}
-
-	public function repair() {
+	public function repair(): void
+	{
 		
 		$this->incrementFixTry(1);
 		
 		$this->repairElement();
+	}
+	
+	public function incrementFixTry($increment): void
+	{
+		$this->fix_try += $increment;
 	}
 	
 }

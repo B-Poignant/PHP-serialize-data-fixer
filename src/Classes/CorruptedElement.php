@@ -2,14 +2,17 @@
 
 namespace UnserializeFixer;
 
-class CorruptedElement  extends BaseElement{
+class CorruptedElement extends BaseElement
+{
 	
-	public function __construct(){
+	public function __construct()
+	{
 		$this->setCorrupted(true);
 	}
 	
 	//todo corrupted clean
-	public function repairElement() {
+	public function repairElement()
+	{
 		
 		/*if(!isset($this->part[1]) || $this->part[1] !== ':'){
 			
@@ -21,7 +24,8 @@ class CorruptedElement  extends BaseElement{
 		
 	}
 	
-	public function getSerializeElement() {
+	public function getSerializeElement()
+	{
 		
 		return null;
 	}

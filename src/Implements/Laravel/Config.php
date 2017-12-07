@@ -1,7 +1,9 @@
 <?php
 
-class Laravel extends UnserializeFixer\Config{
-	public static function getData() {
+class Laravel extends UnserializeFixer\Config
+{
+	public static function getData()
+	{
 		
 	}
 }

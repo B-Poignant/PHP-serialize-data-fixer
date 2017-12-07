@@ -2,13 +2,17 @@
 
 namespace UnserializeFixer\Elements;
 
-class ElementArray  extends \UnserializeFixer\CanHoldElement {
-	public function getSerializeElement(){
+use UnserializeFixer\CanHoldElement;
+
+class ElementArray extends CanHoldElement
+{
+	public function getSerializeElement(): string
+	{
 		
 		$this->elementsCheck();
 		
-		$part = 'a:'.$this->getlength().':{';
-		foreach($this->getElements(true) as $index=>$element){
+		$part = 'a:' . $this->getlength() . ':{';
+		foreach ($this->getElements(true) as $index => $element) {
 			$part .= $element->getSerialize();
 		}
 		$part .= '};';

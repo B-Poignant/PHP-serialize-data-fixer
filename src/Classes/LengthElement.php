@@ -2,7 +2,7 @@
 
 namespace UnserializeFixer;
 
-abstract class LengthElement extends baseElement
+abstract class LengthElement extends BaseElement
 {
 	public $length = null;
 	

@@ -2,7 +2,7 @@
 
 namespace UnserializeFixer;
 
-abstract class CanHoldElement extends lengthElement
+abstract class CanHoldElement extends LengthElement
 {
 	public $elements = [];
 	
